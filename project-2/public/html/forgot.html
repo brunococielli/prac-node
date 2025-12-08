@@ -3,16 +3,21 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>First Page</title>
+	<title>Forgot Password</title>
 	
 	<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-	<h1>Welcome!</h1>
-	<button class="logBtn">Log in</button>
-	<button id="forgotBtn">I don't have an account</button>
+	<h2>Put email bellow and we'll send you your password!</h1>
 
-	<script type="module" src="../js/main.js"></script>
+	<input id="email" type="text" placeholder="Email">
+
+	<div class="btn-group">
+		<button id="backBtn"><</button>
+		<button id="sendBtn">Send</button>
+	</div>
+
+	<script type="module" src="../js/forgot.js"></script>
 </body>
 </html>

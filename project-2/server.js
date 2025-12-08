@@ -71,6 +71,28 @@ app.post("/send-email", async (req, res) => {
 	}
 })
 
+app.post("/forgot-password", async (req, res) => {
+	const { email } = req.body
+
+	const user = users.find(user => user.email === email)
+
+	if (!user) return res.status(404).send("User doesn't exist")
+
+	try {
+		const response = await resend.emails.send({
+			from: "Acme <onboarding@resend.dev>",
+			to: email,
+			subject: "We got you!",
+			html: `<p>Your password is: ${user.password} </p>`
+		})
+
+		res.status(200).json({ ok: true })
+	}	catch (err) {
+		console.error(err)
+    res.status(500).json({ ok: false, error: err.message })
+	}
+})
+
 app.get("/users", (req, res) => {
 	res.json(users)
 })

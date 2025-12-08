@@ -3,9 +3,12 @@ import { goBack } from "./utils.js"
 const emailInp = document.getElementById("email")
 const passwordInp = document.getElementById("password")
 const logBtn = document.querySelector(".logBtn")
+const forgotBtn = document.getElementById("forgotBtn")
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.querySelector(".backBtn").addEventListener("click", goBack)
+    const backBtn = document.querySelector(".backBtn")
+		
+		backBtn.addEventListener("click", goBack)
 })
 
 const logUser = async () => {
@@ -40,4 +43,9 @@ const logUser = async () => {
 	}
 }
 
+const goForgotPage = () => {
+	window.location.href = "/html/forgot.html"
+}
+
+forgotBtn.addEventListener("click", goForgotPage)
 logBtn.addEventListener("click", logUser)
