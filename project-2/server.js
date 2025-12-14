@@ -11,6 +11,7 @@ import {
 } from "./usersStore.js"
 import "dotenv/config"
 import { Resend } from "resend"
+import bcrypt from "bcrypt"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const __filename = fileURLToPath(import.meta.url)
@@ -20,7 +21,7 @@ const app = express()
 app.use(express.json())
 app.use(express.static("public"))
 
-app.post("/register", (req, res) => {
+app.post("/register", async (req, res) => {
 	const { email, password } = req.body
 
 	if (!email || !password) 
@@ -33,10 +34,12 @@ app.post("/register", (req, res) => {
 	if (exists) 
 		return res.status(409).send("this email is alread signed in")
 
+	const hashedPassword = await bcrypt.hash(password, 10)
+
 	const newUser = {
 		id: Date.now(),
 		email,
-		password
+		password: hashedPassword
 	}
 
 	users.push(newUser)
@@ -46,29 +49,23 @@ app.post("/register", (req, res) => {
 	res.send("User created successfully")
 })
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
 	const { email, password } = req.body
 
 	if (!email || !password)
 		return res.status(400).send("missing email or password")
 
-	const account = users.find((user) => {
-		return user.email === email && user.password === password
-	})
+  const user = users.find(u => u.email === email)
+  if (!user) return res.status(400).send("Invalid credentials")
 
-	if (account) {
-		loadSessions()
+  const match = await bcrypt.compare(password, user.password)
+  if (!match) return res.status(400).send("Invalid credentials")
 
-		const token = createToken()
+  const token = createToken()
+  sessions[token] = email
+  saveSessions()
 
-		sessions[token] = email
-		saveSessions()
-		
-		res.json({ token })
-	}
-	else {
-		return res.status(400).send("email or password incorrect")
-	}
+  res.json({ token })
 })
 
 app.post("/send-email", async (req, res) => {

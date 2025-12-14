@@ -1,12 +1,7 @@
 [
   {
-    "id": 1765461554321,
+    "id": 1765673785453,
     "email": "bruno.cocielli@hotmail.com",
-    "password": "123"
-  },
-  {
-    "id": 1765571750816,
-    "email": "cociellited@gmail.com",
-    "password": "123"
+    "password": "$2b$10$NkOHUT/cmOmkCMxB7qxsS.zRPVcP8HqmObQWUlbeBfDNqSUiVqmS6"
   }
 ]

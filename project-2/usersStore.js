@@ -19,20 +19,13 @@ const saveUsers = () => {
 const loadSessions = () => {
   try {
     const raw = fs.readFileSync("./sessions.json", "utf8")
-
-    // parse file
     const data = JSON.parse(raw)
 
-    // clear current object without replacing it
     Object.keys(sessions).forEach(key => delete sessions[key])
-
-    // copy keys into the same object reference
     Object.assign(sessions, data)
 
   } catch (err) {
     console.log("Could not read sessions.json, starting empty")
-    
-    // also empty the in-memory object
     Object.keys(sessions).forEach(key => delete sessions[key])
   }
 }
