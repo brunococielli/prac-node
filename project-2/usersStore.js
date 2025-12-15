@@ -1,4 +1,5 @@
 import fs from "fs"
+import crypto from "crypto"
 
 let users = []
 let sessions = {}
@@ -38,7 +39,11 @@ const createToken = () => {
   return Math.random().toString(36).slice(2) + Date.now();
 }
 
+const generateResetToken = () => {
+  return crypto.randomBytes(32).toString("hex")
+}
+
 loadUsers()
 loadSessions()
 
-export { users, saveUsers, sessions, loadSessions, saveSessions, createToken }
+export { users, saveUsers, sessions, loadSessions, saveSessions, createToken, generateResetToken }

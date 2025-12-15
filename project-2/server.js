@@ -7,11 +7,13 @@ import {
 	sessions,
 	loadSessions,
 	saveSessions, 
-	createToken 
+	createToken,
+	generateResetToken
 } from "./usersStore.js"
 import "dotenv/config"
 import { Resend } from "resend"
 import bcrypt from "bcrypt"
+import crypto from "crypto"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const __filename = fileURLToPath(import.meta.url)
@@ -93,19 +95,56 @@ app.post("/forgot-password", async (req, res) => {
 
 	if (!user) return res.status(404).send("User doesn't exist")
 
+	const resetToken = generateResetToken()
+
+  user.resetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex")
+
+  user.resetTokenExpires = Date.now() + 15 * 60 * 1000 
+
+  saveUsers()
+
+	const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`
+
 	try {
 		const emailResponse = await resend.emails.send({
 			from: "Ted <onboarding@resend.dev>",
 			to: email,
-			subject: "We got you!",
-			html: `<p>Your password is: ${user.password} </p>`
+			subject: "Reset your password!",
+			html: `<a href="${resetLink}">Reset password link.</a>`
 		})
 
-		res.status(200).json({ ok: true })
+		res.status(200).send("If email exists, reset link sent")
 	}	catch (err) {
 		console.error(err)
     res.status(500).json({ ok: false, error: err.message })
 	}
+})
+
+app.post("/reset-password", async (req, res) => {
+  const { token, newPassword } = req.body
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex")
+
+  const user = users.find(u =>
+    u.resetToken === hashedToken &&
+    u.resetTokenExpires > Date.now()
+  )
+
+  if (!user) return res.status(400).send("Invalid or expired token")
+
+  user.password = await bcrypt.hash(newPassword, 10)
+  user.resetToken = null
+  user.resetTokenExpires = null
+
+  saveUsers()
+
+  res.send("Password updated")
 })
 
 app.post("/logout", async (req, res) => {
@@ -142,6 +181,12 @@ app.get("/check", (req, res) => {
   if (!email) return res.status(401).send("Invalid token")
 
   res.status(200).send("OK")
+})
+
+app.get("/reset-password", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "public", "html", "reset-password.html")
+  )
 })
 
 app.listen(3000, () => {

@@ -2,6 +2,13 @@
   {
     "id": 1765673785453,
     "email": "bruno.cocielli@hotmail.com",
-    "password": "$2b$10$NkOHUT/cmOmkCMxB7qxsS.zRPVcP8HqmObQWUlbeBfDNqSUiVqmS6"
+    "password": "$2b$10$GeSU8hOgJwmUcS0AOjXVWOLB721eEaLiFp45ylD9E/a279v1sbDha",
+    "resetToken": null,
+    "resetTokenExpires": null
+  },
+  {
+    "id": 1765757668202,
+    "email": "cociellited@gmail.com",
+    "password": "$2b$10$627OzZgrMaibXuK0/sKXX.bfrXAVH9SVKilOc5btT.6lduh3mpO6u"
   }
 ]
