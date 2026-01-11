@@ -13,4 +13,5 @@ model User {
   password          String
   resetToken        String?
   resetTokenExpires DateTime?
+	images String[]
 }

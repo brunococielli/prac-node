@@ -24,3 +24,18 @@ input {
 	display: inline-block;
 	margin: 10px;
 }
+
+#imagesDiv {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 16px; 
+  padding: 16px;
+}
+
+#imagesDiv img {
+  width: 350px;
+  aspect-ratio: 1 / 1; 
+  object-fit: cover;   
+  border-radius: 8px;
+  background-color: #eee;
+}

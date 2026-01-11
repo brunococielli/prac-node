@@ -6,6 +6,9 @@ import { Resend } from "resend"
 import bcrypt from "bcrypt"
 import crypto from "crypto"
 import prisma from "./db.js"
+import { upload } from "./upload.js"
+import { authMiddleware } from "./middleware/authMiddleware.js"
+import { sessions } from "./sessions.js"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -15,8 +18,7 @@ const app = express()
 
 app.use(express.json())
 app.use(express.static("public"))
-
-const sessions = {}
+app.use("/uploads", express.static("uploads"))
 
 const createToken = () =>
   Math.random().toString(36).slice(2) + Date.now()
@@ -177,6 +179,36 @@ app.post("/reset-password", async (req, res) => {
   res.send("Password updated")
 })
 
+app.post("/upload", authMiddleware, upload.single("image"), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" })
+      }
+
+      const userId = req.user.id
+
+      const imagePath = `/uploads/${req.file.filename}`
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          images: {
+            push: imagePath,
+          },
+        },
+      })
+
+      res.json({
+        message: "Image uploaded",
+        image: imagePath,
+      })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ error: "Upload failed" })
+    }
+  }
+)
+
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/html/index.html")
 })
@@ -185,6 +217,20 @@ app.get("/reset-password", (req, res) => {
   res.sendFile(
     path.join(__dirname, "public", "html", "reset-password.html")
   )
+})
+
+app.get("/sendImages", authMiddleware, async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { images: true },
+    })
+
+    res.json(user.images)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: "Failed to load images" })
+  }
 })
 
 app.listen(3000, () => {
