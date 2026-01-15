@@ -1,4 +1,5 @@
 import express from "express"
+import fs from "fs"
 import path from "path"
 import { fileURLToPath } from "url"
 import "dotenv/config"
@@ -208,6 +209,46 @@ app.post("/upload", authMiddleware, upload.single("image"), async (req, res) => 
     }
   }
 )
+
+app.delete("/deleteImage", authMiddleware, async (req, res) => {
+  try {
+    const { src } = req.body
+    const userId = req.user.id
+
+    if (!src) {
+      return res.status(400).json({ error: "Missing image src" })
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { images: true },
+    })
+
+    if (!user.images.includes(src)) {
+      return res.status(403).json({ error: "Not allowed" })
+    }
+
+    const filePath = path.join(process.cwd(), src)
+
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath)
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        images: {
+          set: user.images.filter(img => img !== src),
+        },
+      },
+    })
+
+    res.json({ message: "Image deleted" })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: "Delete failed" })
+  }
+})
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/html/index.html")

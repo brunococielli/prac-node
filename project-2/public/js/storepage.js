@@ -2,6 +2,12 @@ const logoutBtn = document.getElementById("logoutBtn")
 const fileInput = document.getElementById("fileInput")
 const uploadBtn = document.getElementById("uploadBtn")
 const imagesDiv = document.getElementById("imagesDiv")
+const modal = document.getElementById("imageModal")
+const modalImage = document.getElementById("modalImage")
+const closeBtn = document.getElementById("closeBtn")
+const deleteBtn = document.getElementById("deleteBtn")
+
+let currentImageSrc = null
 
 const getToken = () => localStorage.getItem("token")
 
@@ -25,7 +31,7 @@ fileInput.addEventListener("change", async () => {
 
   const userIMG = fileInput.files[0]
 
-	if (!userIMG) return alert("Choose an image")
+	if (!userIMG) return alert("no image chosen")
 
 	const formData = new FormData()
 	formData.append("image", userIMG)
@@ -58,9 +64,55 @@ const loadImages = async () => {
   images.forEach(src => {
     const img = document.createElement("img")
     img.src = src
+
+		img.addEventListener("click", () => {
+			openModal(src)
+		})
+
     imagesDiv.appendChild(img)
   })
 }
+
+const openModal = (src) => {
+  currentImageSrc = src
+  modalImage.src = src
+  modal.classList.remove("hidden")
+}
+
+const closeModal = () => {
+  modal.classList.add("hidden")
+  modalImage.src = ""
+  currentImageSrc = null
+}
+
+closeBtn.addEventListener("click", closeModal)
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) closeModal()
+})
+
+deleteBtn.addEventListener("click", async () => {
+  if (!currentImageSrc) return
+
+  const confirmDelete = confirm("Are you sure you want to delete this image?")
+  if (!confirmDelete) return
+
+  const token = getToken()
+
+  const response = await fetch("/deleteImage", {
+    method: "DELETE",
+    headers: {
+      Authorization: token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ src: currentImageSrc }),
+  })
+
+  if (!response.ok) return alert("Failed to delete image")
+  
+  closeModal()
+  loadImages()
+})
 
 uploadBtn.addEventListener("click", () => fileInput.click())
 logoutBtn.addEventListener("click", logoutUser)
