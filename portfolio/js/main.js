@@ -23,3 +23,4 @@ links.forEach(link => {
 })
 
 document.querySelector('.hero-nav a[data-section="projects"]').classList.add("active")
+document.getElementById("projects").classList.add("active")
