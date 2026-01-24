@@ -29,6 +29,6 @@ const token = params.get("token")
 })
 
 backBtn.addEventListener("click", () => {
-  window.location.href = "/"
+  window.location.href = "index.html"
 	backBtn.style.display = "none"
 })

@@ -39,7 +39,7 @@ const logUser = async () => {
 		const data = await res.json()
   	localStorage.setItem("token", data.token)
 
-		window.location.href = "/html/storepage.html"
+		window.location.href = "storepage.html"
 	} catch (err) {
 		console.error(err)
 		alert("Network error or server offline")
@@ -47,7 +47,7 @@ const logUser = async () => {
 }
 
 const goForgotPage = () => {
-	window.location.href = "/html/forgot.html"
+	window.location.href = "forgot.html"
 }
 
 forgotBtn.addEventListener("click", goForgotPage)

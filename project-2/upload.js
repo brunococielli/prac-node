@@ -1,8 +1,10 @@
 import multer from "multer"
 import path from "path"
 
+const uploadDir = path.join(process.cwd(), "project-2", "uploads")
+
 const storage = multer.diskStorage({
-  destination: "uploads/",
+  destination: uploadDir,
   filename: (req, file, cb) => {
     const uniqueName =
       Date.now() + "-" + Math.round(Math.random() * 1e9)

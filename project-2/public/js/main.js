@@ -17,7 +17,7 @@ const checkToken = async () => {
       headers: { Authorization: token }
     })
 
-  if (res.ok) window.location.href = "/html/storepage.html"
+  if (res.ok) window.location.href = "storepage.html"
 
 	} catch (err) {
 		console.error("Network error:", err) 

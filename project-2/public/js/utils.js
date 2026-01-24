@@ -1,11 +1,11 @@
 export const goBack = () => {
-	window.location.href = "/html/index.html"
+	window.location.href = "index.html"
 }
 
 export const goLogInPage= () => {
-	window.location.href = "/html/login.html"
+	window.location.href = "login.html"
 }
 
 export const goRegisterPage= () => {
-	window.location.href = "/html/register.html"
+	window.location.href = "register.html"
 }

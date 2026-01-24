@@ -22,7 +22,7 @@ const logoutUser = async () => {
 
 	localStorage.removeItem("token")
 
-	window.location.href = "/"
+	window.location.href = "index.html"
 }
 
 fileInput.addEventListener("change", async () => {

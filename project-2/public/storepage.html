@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Storage</title>
+	<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+	<h2>Upload your favorite pictures!</h2>
+	<input type="file" id="fileInput" style="display: none;" accept="image/*">
+
+	<button id="uploadBtn">Upload</button>
+
+	<div id="imagesDiv"></div>
+
+	<div id="imageModal" class="hidden">
+		<div class="modal-content">
+			<img id="modalImage" />
+			
+			<div class="modal-actions">
+				<button id="deleteBtn">Delete</button>
+				<button id="closeBtn">Close</button>
+			</div>
+		</div>
+	</div>
+
+	<button id="logoutBtn">Log out</button>
+	
+	<script type="module" src="./js/storepage.js" defer></script>
+</body>
+</html>
